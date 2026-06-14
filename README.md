@@ -1,6 +1,6 @@
 # Todo App
 
-A polished Flutter task manager powered by Firebase. Todo App helps users sign in, manage daily tasks in real time, filter work by date and status, personalize their profile, switch themes, and receive task reminders through Firebase Cloud Messaging.
+A Flutter task manager powered by Firebase. Todo App helps users sign in, manage daily tasks in real time, filter work by date and status, personalize their profile, switch themes, and receive task reminders through Firebase Cloud Messaging.
 
 ## Highlights
 
@@ -95,8 +95,8 @@ flutter doctor
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/todo-app.git
-cd todo-app
+git clone https://github.com/sabihaniaz7/Todo-App.git
+cd Todo-App
 ```
 
 Install dependencies:
@@ -198,27 +198,3 @@ Build for web:
 ```bash
 flutter build web
 ```
-
-## Security Notes
-
-Do not commit private Firebase service-account credentials, API secrets, or production keys to a public repository. Server-side push notification logic should be handled with a trusted backend or Cloud Functions, not directly inside a client app.
-
-Before publishing this project publicly, rotate any exposed Firebase service-account keys and move privileged notification sending to a secure backend.
-
-## Roadmap
-
-- Add due dates and reminders per task
-- Add priority labels
-- Add task search
-- Add recurring tasks
-- Add Firestore security rules documentation
-- Add screenshots or demo GIFs
-- Add release builds for Android and web
-
-## Author
-
-Created by Sabiha Niaz.
-
-## License
-
-This project is currently not licensed. Add a license file before accepting external contributions or publishing as open source.
