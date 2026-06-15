@@ -1,6 +1,6 @@
 # Todo App
 
-A Flutter task manager powered by Firebase. Todo App helps users sign in, manage daily tasks in real time, filter work by date and status, personalize their profile, switch themes, and receive task reminders through Firebase Cloud Messaging.
+A Flutter task manager powered by Firebase. Todo App helps users sign in, manage daily tasks in real time, filter work by date, personalize their profile, switch themes, and receive task reminders through Firebase Cloud Messaging.
 
 ## Highlights
 
@@ -42,33 +42,47 @@ A Flutter task manager powered by Firebase. Todo App helps users sign in, manage
 
 ```text
 lib/
-  main.dart
-  firebase_options.dart
-  providers/
-    notification_provider.dart
-    task_filter_provider.dart
-    theme_provider.dart
-  screens/
-    about_screen.dart
-    auth_screen.dart
-    home_screen.dart
-    pricavy_policy_screen.dart
-    profile_screen.dart
-  service/
-    auth_service.dart
-    firestore_service.dart
-    messaging_service.dart
-    profile_image_service.dart
-  theme/
-    app_colors.dart
-    app_sizes.dart
-    app_theme.dart
-  widgets/
-    add_task_sheet.dart
-    calendar_strip.dart
-    filter_chips_row.dart
-    profile_avatar.dart
-    task_tile.dart
+|------main.dart
+|------firebase_options.dart
+|
+|------controllers/
+|   |------task_controller.dart
+|
+|------models/
+|   |------todo_task.dart
+|   |------task_filter_counts.dart
+|
+|------providers/
+|   |------notification_provider.dart
+|   |------task_filter_provider.dart
+|   |------theme_provider.dart
+|
+|------screens/
+|   |------about_screen.dart
+|   |------auth_screen.dart
+|   |------home_screen.dart
+|   |------pricavy_policy_screen.dart
+|   |------profile_screen.dart
+|   
+|------service/
+|   |------auth_service.dart
+|   |------firestore_service.dart
+|   |------messaging_service.dart
+|   |------profile_image_service.dart
+|   
+|------theme/
+|   |------app_colors.dart
+|   |------app_sizes.dart
+|   |------app_theme.dart
+|
+|------widgets/
+|   |------add_task_sheet.dart
+|   |------calendar_strip.dart
+|   |------filter_chips_row.dart
+|   |------profile_avatar.dart
+|   |------task_tile.dart
+|   |------task_header.dart
+
 ```
 
 ## Getting Started
@@ -103,12 +117,6 @@ Install dependencies:
 
 ```bash
 flutter pub get
-```
-
-Configure Firebase for your own project:
-
-```bash
-flutterfire configure
 ```
 
 Run the app:
