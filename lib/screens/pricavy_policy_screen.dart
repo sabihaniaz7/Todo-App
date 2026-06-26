@@ -35,7 +35,6 @@ class PrivacyPolicyScreen extends StatelessWidget {
               Text(
                 'Your Data, Encrypted & Secured',
                 style: TextStyle(
-                  fontFamily: 'Nunito',
                   fontSize: AppSizes.fontXxl,
                   fontWeight: FontWeight.w900,
                   color: isDark
@@ -102,7 +101,6 @@ class PrivacyPolicyScreen extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-              fontFamily: 'Nunito',
               fontSize: 16,
               fontWeight: FontWeight.w800,
               color: Color(0xFFB19FFB), // Unified purple tone match
@@ -112,7 +110,6 @@ class PrivacyPolicyScreen extends StatelessWidget {
           Text(
             body,
             style: TextStyle(
-              fontFamily: 'Nunito',
               fontSize: 14,
               height: 1.5,
               color: isDark

@@ -138,7 +138,6 @@ class _AuthScreenState extends State<AuthScreen> {
                           'Todo App',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontFamily: 'Nunito',
                             fontSize: AppSizes.fontDisplay,
                             fontWeight: FontWeight.w900,
                             // color: AppColors.primary,
@@ -155,7 +154,6 @@ class _AuthScreenState extends State<AuthScreen> {
                       _isLogin ? 'Welcome Back' : 'Create an Account',
 
                       style: TextStyle(
-                        fontFamily: 'Nunito',
                         fontSize: AppSizes.fontXxl,
                         fontWeight: FontWeight.w800,
                         color: textColor,
@@ -264,7 +262,6 @@ class _AuthScreenState extends State<AuthScreen> {
                           textAlign: TextAlign.center,
                           text: TextSpan(
                             style: const TextStyle(
-                              fontFamily: 'Nunito',
                               fontSize: 13,
                               color: Colors.white54,
                             ),

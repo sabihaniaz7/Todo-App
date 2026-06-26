@@ -127,7 +127,6 @@ class _FilterChip extends StatelessWidget {
               child: Text(
                 count == -1 ? '!' : count.toString(),
                 style: TextStyle(
-                  fontFamily: 'Nunito',
                   fontSize: 12,
                   fontWeight: FontWeight.w800,
                   color: color,

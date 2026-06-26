@@ -126,19 +126,19 @@ class FirestoreService {
   Future<void> runDailyScheduleCheck(String userId, String deviceToken) async {
     final now = DateTime.now();
     // Only trigger this automated check if it's past 8:00 PM (20:00)
-    if (now.hour >= 20) {
-      final activeTasks = await _tasksCollection
-          .where('userId', isEqualTo: userId)
-          .where('isCompleted', isEqualTo: false)
-          .get();
-      if (activeTasks.docs.isNotEmpty) {
-        await _sendPushNotification(
-          deviceToken: deviceToken,
-          title: "Daily Todo Checkpoint",
-          body:
-              "You still have ${activeTasks.docs.length} tasks pending on your list for tonight!",
-        );
-      }
+    // if (now.hour >= 20) {
+    final activeTasks = await _tasksCollection
+        .where('userId', isEqualTo: userId)
+        .where('isCompleted', isEqualTo: false)
+        .get();
+    if (activeTasks.docs.isNotEmpty) {
+      await _sendPushNotification(
+        deviceToken: deviceToken,
+        title: "Daily Todo Checkpoint",
+        body:
+            "You still have ${activeTasks.docs.length} tasks pending on your list for tonight!",
+      );
+      // }
     }
   }
 
@@ -179,6 +179,8 @@ class FirestoreService {
     String userId,
     String deviceToken,
   ) async {
+    // Wait for Firestore write to propagate before querying
+    await Future.delayed(const Duration(milliseconds: 800));
     final remainingActiveTasks = await _tasksCollection
         .where('userId', isEqualTo: userId)
         .where('isCompleted', isEqualTo: false)

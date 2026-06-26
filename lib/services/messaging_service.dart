@@ -28,7 +28,9 @@ class MessagingService {
 
   Future<void> initializeFCM(String userId, BuildContext context) async {
     if (!_backgroundHandlerRegistered) {
-      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+      FirebaseMessaging.onBackgroundMessage(
+        _firebaseMessagingBackgroundHandler,
+      );
       _backgroundHandlerRegistered = true;
     }
 
@@ -72,7 +74,7 @@ class MessagingService {
         // Check which scenario payload the server sent us, and display an alert
         if (title.contains("Yesterday's Leftovers")) {
           _showInAppDialog(context, title, body, Colors.amber);
-        } else if (title.contains('Clean Slate')) {
+        } else if (title.contains('Clean Slate!')) {
           _showInAppDialog(context, title, body, Colors.green);
         } else {
           // Standard Daily Fixed Check or default alert

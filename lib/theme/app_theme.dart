@@ -50,6 +50,10 @@ class AppTheme {
       scaffoldBackgroundColor: isDark
           ? AppColors.darkBackground
           : AppColors.lightBackground,
+      //  Core fallback for all widgets/packages that read root fontFamily
+      fontFamily: 'Inter',
+
+      //  Applied global text modifications
       textTheme: baseTextTheme,
       appBarTheme: AppBarTheme(
         backgroundColor: isDark
@@ -70,7 +74,6 @@ class AppTheme {
               : AppColors.lightTextPrimary,
           fontSize: AppSizes.fontXxl,
           fontWeight: FontWeight.w800,
-          fontFamily: 'Inter',
         ),
         iconTheme: IconThemeData(
           color: isDark
@@ -191,7 +194,6 @@ class AppTheme {
               : AppColors.lightTextPrimary,
           fontSize: AppSizes.fontXl,
           fontWeight: FontWeight.w700,
-          fontFamily: 'Inter',
         ),
       ),
 

@@ -34,7 +34,6 @@ class AboutScreen extends StatelessWidget {
               Text(
                 'Todo App',
                 style: TextStyle(
-                  fontFamily: 'Nunito',
                   fontSize: AppSizes.fontDisplay,
                   fontWeight: FontWeight.w900,
                   color: const Color(0xFFB19FFB), // Signature light purple tone
@@ -44,7 +43,6 @@ class AboutScreen extends StatelessWidget {
               Text(
                 'Version 1.0.0',
                 style: TextStyle(
-                  fontFamily: 'Nunito',
                   fontSize: 13,
                   color: isDark
                       ? AppColors.darkTextSecondary
@@ -87,7 +85,6 @@ class AboutScreen extends StatelessWidget {
                 child: Text(
                   '© 2026 By Sabiha Niaz.',
                   style: TextStyle(
-                    fontFamily: 'Nunito',
                     fontSize: 12,
                     color: Colors.grey,
                     fontWeight: FontWeight.w600,
@@ -127,7 +124,6 @@ class AboutScreen extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-              fontFamily: 'Nunito',
               fontSize: 16,
               fontWeight: FontWeight.w800,
               color: Color(0xFFB19FFB), // Matching your custom accent color
@@ -137,7 +133,6 @@ class AboutScreen extends StatelessWidget {
           Text(
             content,
             style: TextStyle(
-              fontFamily: 'Nunito',
               fontSize: 14,
               height: 1.5,
               color: isDark

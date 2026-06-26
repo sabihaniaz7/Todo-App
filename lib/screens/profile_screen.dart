@@ -251,14 +251,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onTap: () => _openPrivacyPolicy(),
                   ),
 
-                  _DividerLine(),
-                  _ActionTile(
-                    icon: Icons.share_rounded,
-                    iconColor: AppColors.primary,
-                    title: 'Share',
-                    subtitle: 'Tell your friends about Todo App',
-                    onTap: _shareApp,
-                  ),
+                  // _DividerLine(),
+                  // _ActionTile(
+                  //   icon: Icons.share_rounded,
+                  //   iconColor: AppColors.primary,
+                  //   title: 'Share',
+                  //   subtitle: 'Tell your friends about Todo App',
+                  //   onTap: _shareApp,
+                  // ),
                 ],
               ),
 
@@ -334,7 +334,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: const Text('Sign Out'),
         content: const Text(
           'Are you sure you want to sign out of your account?',
-          style: TextStyle(fontFamily: 'Nunito'),
         ),
         actions: [
           TextButton(
