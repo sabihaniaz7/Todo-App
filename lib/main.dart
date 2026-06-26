@@ -18,10 +18,9 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   // locks the app in potrait mode always
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-   // Allows Google Fonts to load from bundled assets when offline
+  // Allows Google Fonts to load from bundled assets when offline
   GoogleFonts.config.allowRuntimeFetching = true; // fetch when online
   runApp(const MyApp());
-  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {

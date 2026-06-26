@@ -92,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Profile Header
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(AppSizes.lg),
+                padding: const EdgeInsets.all(AppSizes.md),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
@@ -159,26 +159,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(width: AppSizes.md),
                     // Display profile email metadata text field
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          userName,
-                          style: const TextStyle(
-                            fontSize: AppSizes.fontXxl,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize:
+                            MainAxisSize.min, // Clean bounding alignment
+                        children: [
+                          Text(
+                            userName,
+                            style: const TextStyle(
+                              fontSize: AppSizes.fontXxl,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: AppSizes.xs),
-                        Text(
-                          userEmail,
-                          style: TextStyle(
-                            fontSize: AppSizes.fontMd,
-                            color: Colors.white.withValues(alpha: 0.8),
+                          const SizedBox(width: AppSizes.xs),
+                          Text(
+                            userEmail,
+                            // maxLines: 1,
+                            style: TextStyle(
+                              fontSize: AppSizes.fontMd,
+                              color: Colors.white.withValues(alpha: 0.8),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
 
                     ////

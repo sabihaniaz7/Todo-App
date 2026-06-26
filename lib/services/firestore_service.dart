@@ -204,13 +204,37 @@ class FirestoreService {
   }) async {
     // 1. Define the scopes required to talk to Firebase Messaging
     final scopes = ['https://www.googleapis.com/auth/firebase.messaging'];
-    final String projectId = const String.fromEnvironment('PROJECT_ID');
-    final String privateKeyId = const String.fromEnvironment('PRIVATE_KEY_ID');
-    final String privateKey = const String.fromEnvironment(
-      'PRIVATE_KEY',
-    ).replaceAll(r'\n', '\n');
-    final String clientEmail = const String.fromEnvironment('CLIENT_EMAIL');
-    final String clientId = const String.fromEnvironment('CLIENT_ID');
+    final String projectId = _env('PROJECT_ID', 'project_id');
+    final String privateKeyId = _env('PRIVATE_KEY_ID', 'private_key_id');
+    final String privateKey = _normalizePrivateKey(
+      _env('PRIVATE_KEY', 'private_key'),
+    );
+    final String clientEmail = _env('CLIENT_EMAIL', 'client_email');
+    final String clientId = _env('CLIENT_ID', 'client_id');
+
+    final missingFields = <String>[
+      if (projectId.isEmpty) 'PROJECT_ID',
+      if (privateKeyId.isEmpty) 'PRIVATE_KEY_ID',
+      if (privateKey.isEmpty) 'PRIVATE_KEY',
+      if (clientEmail.isEmpty) 'CLIENT_EMAIL',
+      if (clientId.isEmpty) 'CLIENT_ID',
+    ];
+
+    if (missingFields.isNotEmpty) {
+      print(
+        'FCM delivery skipped: missing dart defines: ${missingFields.join(', ')}',
+      );
+      return;
+    }
+
+    if (!privateKey.startsWith('-----BEGIN PRIVATE KEY-----') ||
+        !privateKey.trimRight().endsWith('-----END PRIVATE KEY-----')) {
+      print(
+        'FCM delivery skipped: PRIVATE_KEY is not a valid PEM. '
+        'Run with --dart-define-from-file=secrets.json or pass the full key with escaped newlines.',
+      );
+      return;
+    }
 
     final serviceMap = {
       "type": "service_account",
@@ -262,5 +286,34 @@ class FirestoreService {
     } catch (e) {
       print('FCM delivery error: $e');
     }
+  }
+
+  String _normalizePrivateKey(String rawKey) {
+    final decodedKey = rawKey.contains('%') ? Uri.decodeFull(rawKey) : rawKey;
+
+    return decodedKey
+        .trim()
+        .replaceAll(r'\r\n', '\n')
+        .replaceAll(r'\n', '\n')
+        .replaceAll('\r\n', '\n');
+  }
+
+  String _env(String upperCaseName, String lowerCaseName) {
+    const values = {
+      'PROJECT_ID': String.fromEnvironment('PROJECT_ID'),
+      'project_id': String.fromEnvironment('project_id'),
+      'PRIVATE_KEY_ID': String.fromEnvironment('PRIVATE_KEY_ID'),
+      'private_key_id': String.fromEnvironment('private_key_id'),
+      'PRIVATE_KEY': String.fromEnvironment('PRIVATE_KEY'),
+      'private_key': String.fromEnvironment('private_key'),
+      'CLIENT_EMAIL': String.fromEnvironment('CLIENT_EMAIL'),
+      'client_email': String.fromEnvironment('client_email'),
+      'CLIENT_ID': String.fromEnvironment('CLIENT_ID'),
+      'client_id': String.fromEnvironment('client_id'),
+    };
+
+    return values[upperCaseName]!.isNotEmpty
+        ? values[upperCaseName]!
+        : values[lowerCaseName]!;
   }
 }

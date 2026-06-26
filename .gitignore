@@ -63,6 +63,7 @@ firebase-adminsdk*.json
 google-application-credentials*.json
 # Sensitive keys
 secrets.json
+secrets.env
 # Firebase / FlutterFire generated configuration paths
 **/lib/firebase_options.dart
 **/android/app/google-services.json

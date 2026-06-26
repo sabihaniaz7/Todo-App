@@ -4,6 +4,7 @@ import 'package:flutter_firebase/controllers/task_controller.dart';
 import 'package:flutter_firebase/models/task_filter_counts.dart';
 import 'package:flutter_firebase/providers/task_filter_provider.dart';
 import 'package:flutter_firebase/screens/profile_screen.dart';
+import 'package:flutter_firebase/services/messaging_service.dart';
 import 'package:flutter_firebase/theme/app_colors.dart';
 import 'package:flutter_firebase/theme/app_sizes.dart';
 import 'package:flutter_firebase/widgets/add_task_sheet.dart';
@@ -24,12 +25,18 @@ class TaskScreen extends StatefulWidget {
 
 class _TaskScreenState extends State<TaskScreen> {
   final TaskController _taskController = TaskController();
+  final MessagingService _messagingService = MessagingService();
   DateTime _selectedDate = DateTime.now();
 
   @override
   void initState() {
     super.initState();
-    _taskController.runStartupNotificationChecks(widget.userId);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (!mounted) return;
+
+      await _messagingService.initializeFCM(widget.userId, context);
+      await _taskController.runStartupNotificationChecks(widget.userId);
+    });
   }
 
   void _openAddTaskDialog() {

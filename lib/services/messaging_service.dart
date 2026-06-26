@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -13,15 +16,30 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 class MessagingService {
+  static Future<NotificationSettings>? _permissionRequest;
+  static bool _backgroundHandlerRegistered = false;
+
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
   final CollectionReference _userCollection = FirebaseFirestore.instance
       .collection('users');
+  StreamSubscription<String>? _tokenRefreshSubscription;
+  StreamSubscription<RemoteMessage>? _foregroundMessageSubscription;
+  StreamSubscription<RemoteMessage>? _messageOpenedSubscription;
 
   Future<void> initializeFCM(String userId, BuildContext context) async {
+    if (!_backgroundHandlerRegistered) {
+      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+      _backgroundHandlerRegistered = true;
+    }
+
     // 1. Request OS Permission permissions (Crucial for Android 13+)
-    await _fcm.requestPermission(alert: true, badge: true, sound: true);
+    _permissionRequest ??= _fcm
+        .requestPermission(alert: true, badge: true, sound: true)
+        .whenComplete(() => _permissionRequest = null);
+    await _permissionRequest;
+
     // 2. Fetch unique token and upload it to the users collection folder
-    String? token = await _fcm.getToken();
+    final token = await _getTokenSafely();
     if (token != null) {
       await _userCollection.doc(userId).set({
         'fcmToken': token,
@@ -29,22 +47,30 @@ class MessagingService {
       }, SetOptions(merge: true));
     }
     // 3. Listen to active dynamic token refreshes
-    _fcm.onTokenRefresh.listen((newToken) {
-      _userCollection.doc(userId).set({
-        'fcmToken': newToken,
-      }, SetOptions(merge: true));
-    });
+    _tokenRefreshSubscription ??= _fcm.onTokenRefresh.listen(
+      (newToken) {
+        _userCollection.doc(userId).set({
+          'fcmToken': newToken,
+          'tokenLastUpdated': Timestamp.now(),
+        }, SetOptions(merge: true));
+      },
+      onError: (Object error) {
+        debugPrint('FCM token refresh failed: $error');
+      },
+    );
     //* --- STATE 2: THE FOREGROUND STATE HANDLER ---
     // Fires when the user is looking directly at the app. We catch the payload
     // and manually show a beautiful alert matching our 3 scenarios!
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    _foregroundMessageSubscription ??= FirebaseMessaging.onMessage.listen((
+      RemoteMessage message,
+    ) {
       print("============== FOREGROUND STATE RECEIVED ==============");
       if (message.notification != null && context.mounted) {
         final title = message.notification!.title ?? "";
         final body = message.notification!.body ?? "";
 
         // Check which scenario payload the server sent us, and display an alert
-        if (title.contains("Yesterdays's Leftovers")) {
+        if (title.contains("Yesterday's Leftovers")) {
           _showInAppDialog(context, title, body, Colors.amber);
         } else if (title.contains('Clean Slate')) {
           _showInAppDialog(context, title, body, Colors.green);
@@ -56,7 +82,9 @@ class MessagingService {
     });
     //* --- STATE 3: THE BACKGROUND STATE HANDLER ---
     // Fires when the app is minimized, and the user physically taps the top system banner alert.
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    _messageOpenedSubscription ??= FirebaseMessaging.onMessageOpenedApp.listen((
+      RemoteMessage message,
+    ) {
       print("============== BACKGROUND STATE TAP OPENED ==============");
       print(
         "User tapped the banner! Notification payload: ${message.notification?.title}",
@@ -65,8 +93,18 @@ class MessagingService {
       // PORTFOLIO TIP: In a larger app, you would read message.data['screen']
       // and use Navigator.push() to take them to a specific page.
     });
-    // Register our background handler for when the app is terminated
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  }
+
+  Future<String?> _getTokenSafely() async {
+    try {
+      return await _fcm.getToken();
+    } on FirebaseException catch (e) {
+      debugPrint('FCM registration failed (${e.code}): ${e.message}');
+      return null;
+    } catch (e) {
+      debugPrint('FCM registration failed: $e');
+      return null;
+    }
   }
 
   // UI Component: Shows a clean in-app overlay dialog block for major alerts

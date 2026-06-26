@@ -42,7 +42,7 @@ class AppTheme {
     );
     final baseTextTheme =
         (brightness == Brightness.light ? typography.black : typography.white)
-            .apply(fontFamily: 'Nunito');
+            .apply(fontFamily: 'Inter');
     return ThemeData(
       useMaterial3: true,
       brightness: brightness,
@@ -70,7 +70,7 @@ class AppTheme {
               : AppColors.lightTextPrimary,
           fontSize: AppSizes.fontXxl,
           fontWeight: FontWeight.w800,
-          fontFamily: 'Nunito',
+          fontFamily: 'Inter',
         ),
         iconTheme: IconThemeData(
           color: isDark
@@ -191,7 +191,7 @@ class AppTheme {
               : AppColors.lightTextPrimary,
           fontSize: AppSizes.fontXl,
           fontWeight: FontWeight.w700,
-          fontFamily: 'Nunito',
+          fontFamily: 'Inter',
         ),
       ),
 

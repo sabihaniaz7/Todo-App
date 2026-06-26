@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_firebase/models/todo_task.dart';
 import 'package:flutter_firebase/providers/task_filter_provider.dart';
 import 'package:flutter_firebase/services/firestore_service.dart';
@@ -63,18 +65,22 @@ class TaskController {
 
     if (task.isCompleted) return;
 
-    final token = await FirebaseMessaging.instance.getToken();
+    final token = await _getDeviceTokenSafely();
     if (token != null) {
       await _firestoreService.evaluateCleanSlateStatus(userId, token);
     }
   }
 
   Future<void> runStartupNotificationChecks(String userId) async {
-    final deviceToken = await FirebaseMessaging.instance.getToken();
+    final deviceToken = await _getDeviceTokenSafely();
     if (deviceToken == null) return;
 
-    await _firestoreService.checkYesterdayLeftOvers(userId, deviceToken);
-    await _firestoreService.runDailyScheduleCheck(userId, deviceToken);
+    try {
+      await _firestoreService.checkYesterdayLeftOvers(userId, deviceToken);
+      await _firestoreService.runDailyScheduleCheck(userId, deviceToken);
+    } catch (e) {
+      debugPrint('Startup notification checks deferred: $e');
+    }
   }
 
   List<TodoTask> mapAndSortTasks(QuerySnapshot snapshot) {
@@ -87,5 +93,17 @@ class TaskController {
     if (filter == TaskFilter.completed) return true;
     if (filter == TaskFilter.pending) return false;
     return null;
+  }
+
+  Future<String?> _getDeviceTokenSafely() async {
+    try {
+      return await FirebaseMessaging.instance.getToken();
+    } on FirebaseException catch (e) {
+      debugPrint('FCM token unavailable (${e.code}): ${e.message}');
+      return null;
+    } catch (e) {
+      debugPrint('FCM token unavailable: $e');
+      return null;
+    }
   }
 }
