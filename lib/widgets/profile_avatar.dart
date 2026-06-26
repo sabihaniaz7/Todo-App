@@ -24,7 +24,6 @@ class _ProfileAvatarState extends State<ProfileAvatar>
   final FirestoreService _firestoreService = FirestoreService();
   StreamSubscription<DocumentSnapshot>? _subscription;
   String? _cachedBase64;
-  String? _cachedUserName;
   bool _loading = true;
 
   // Shimmer animation controller
@@ -52,8 +51,9 @@ class _ProfileAvatarState extends State<ProfileAvatar>
             setState(() {
               // Keep previous cached data if null to avoid flicker on temporary loss
               if (base64String != null) _cachedBase64 = base64String;
-              if (userName != null) _cachedUserName = userName;
-              _loading = false;
+              if (userName != null) {
+                _loading = false;
+              }
             });
           },
           onError: (_) {
@@ -85,23 +85,16 @@ class _ProfileAvatarState extends State<ProfileAvatar>
         ),
       );
     }
+    //  Main Avatar state (Loaded or Done checking)
+    final bool hasImage = _cachedBase64 != null && _cachedBase64!.isNotEmpty;
     return CircleAvatar(
       radius: widget.radius,
-      backgroundColor: Colors.white.withAlpha(20),
-      backgroundImage: _cachedBase64 != null
+      backgroundImage: hasImage
           ? MemoryImage(base64Decode(_cachedBase64!))
           : null,
-      child: _cachedBase64 == null
-          ? Text(
-              _cachedUserName != null && _cachedUserName!.isNotEmpty
-                  ? _cachedUserName![0].toUpperCase()
-                  : '?',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: AppSizes.fontDisplay,
-                fontWeight: FontWeight.bold,
-              ),
-            )
+      // If we DO NOT have an image, show the person icon. If we have an image, child is null.
+      child: !hasImage
+          ? const Icon(Icons.person, color: Colors.white, size: AppSizes.iconXl)
           : null,
     );
   }

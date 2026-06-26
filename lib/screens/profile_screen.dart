@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase/providers/theme_provider.dart';
 import 'package:flutter_firebase/services/firestore_service.dart';
 import 'package:flutter_firebase/services/profile_image_service.dart';
-import 'package:share_plus/share_plus.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String userId;
@@ -381,16 +380,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen()),
-    );
-  }
-
-  void _shareApp() {
-    SharePlus.instance.share(
-      ShareParams(
-        title: 'Todo App',
-        text:
-            'Hey! checkout this ToDo app to manage your tasks https://play.google.com/store/apps/details?id=com.example.todo_app',
-      ),
     );
   }
 }

@@ -151,7 +151,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                     const SizedBox(height: AppSizes.xxl),
                     Text(
-                      _isLogin ? 'Welcome Back' : 'Create an Account',
+                      _isLogin ? 'Welcome Back' : 'Create Account',
 
                       style: TextStyle(
                         fontSize: AppSizes.fontXxl,
@@ -201,88 +201,113 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                     ),
                     const SizedBox(height: AppSizes.lg),
-                    if (_isLoading)
-                      const CircularProgressIndicator()
-                    else ...[
-                      FilledButton(
-                        style: FilledButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 52),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppSizes.radiusMd,
-                            ),
+                    FilledButton(
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 52),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            AppSizes.radiusMd,
                           ),
                         ),
-                        onPressed: () => _handleAuth(
-                          _isLogin
-                              ? () => _authService.loginWithEmail(
-                                  _emailController.text.trim(),
-                                  _passwordController.text.trim(),
-                                )
-                              : () => _authService.signUpWithEmail(
-                                  _nameController.text.trim(),
-                                  _emailController.text.trim(),
-                                  _passwordController.text.trim(),
-                                ),
-                        ),
-                        child: Text(_isLogin ? 'Log in' : 'Sign up'),
                       ),
-                      const SizedBox(height: AppSizes.md),
-                      OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 52),
-                          foregroundColor: textColor,
-                          side: BorderSide(color: AppColors.darkBorder),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              AppSizes.radiusMd,
+                      // Disable the action button completely if any auth process is currently loading
+                      onPressed: _isLoading
+                          ? null
+                          : () => _handleAuth(
+                              _isLogin
+                                  ? () => _authService.loginWithEmail(
+                                      _emailController.text.trim(),
+                                      _passwordController.text.trim(),
+                                    )
+                                  : () => _authService.signUpWithEmail(
+                                      _nameController.text.trim(),
+                                      _emailController.text.trim(),
+                                      _passwordController.text.trim(),
+                                    ),
                             ),
-                          ),
-                        ),
-                        icon: const Icon(
-                          Icons.g_mobiledata,
-                          color: Colors.red,
-                          size: 30,
-                        ),
-                        label: const Text('Sign in with Google'),
-                        onPressed: _handleGoogleSignIn,
-                      ),
-                      const SizedBox(height: AppSizes.xl),
-                      TextButton(
-                        onPressed: () {
-                          setState(() {
-                            _isLogin = !_isLogin;
-                            // Clean input caches instantly during structural tree context swaps
-                            _emailController.clear();
-                            _passwordController.clear();
-                            _nameController.clear();
-                          });
-                        },
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.white54,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: _isLogin
-                                    ? "Don't have an account? "
-                                    : "Have an account? ",
+                      child:
+                          _isLoading &&
+                              _isLogin // If loading email-auth, you could show a spinner here, or just keep the text disabled
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
                               ),
-                              TextSpan(
-                                text: _isLogin ? 'Sign Up' : 'Log in',
-                                style: const TextStyle(
-                                  color: Color(0xFFB19FFB),
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ],
+                            )
+                          : Text(_isLogin ? 'Log in' : 'Sign up'),
+                    ),
+                    const SizedBox(height: AppSizes.md),
+                    OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 52),
+                        foregroundColor: textColor,
+                        side: BorderSide(color: AppColors.darkBorder),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                            AppSizes.radiusMd,
                           ),
                         ),
                       ),
-                    ],
+                      icon: _isLoading
+                          ? const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.primary,
+                              ),
+                            )
+                          : const Icon(
+                              Icons.g_mobiledata,
+                              color: Colors.red,
+                              size: 30,
+                            ),
+                      label: Text(
+                        _isLoading ? 'Connecting...' : 'Sign in with Google',
+                      ),
+                      // Disable button if loading
+                      onPressed: _isLoading ? null : _handleGoogleSignIn,
+                    ),
+                    const SizedBox(height: AppSizes.xl),
+                    TextButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                              setState(() {
+                                _isLogin = !_isLogin;
+                                // Clean input caches instantly during structural tree context swaps
+                                _emailController.clear();
+                                _passwordController.clear();
+                                _nameController.clear();
+                              });
+                            },
+                      child: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.white54,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: _isLogin
+                                  ? "Don't have an account? "
+                                  : "Have an account? ",
+                              style: const TextStyle(fontSize: AppSizes.fontMd),
+                            ),
+                            TextSpan(
+                              text: _isLogin ? 'Sign Up' : 'Log in',
+                              style: const TextStyle(
+                                color: Color(0xFFB19FFB),
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
