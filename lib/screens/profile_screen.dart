@@ -1,4 +1,5 @@
 import 'package:flutter_firebase/providers/notification_provider.dart';
+import 'package:flutter_firebase/providers/profile_screen_provider.dart';
 import 'package:flutter_firebase/screens/about_screen.dart';
 import 'package:flutter_firebase/screens/auth_screen.dart';
 import 'package:flutter_firebase/screens/pricavy_policy_screen.dart';
@@ -23,35 +24,29 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final ProfileImageService _imageService = ProfileImageService();
   final FirestoreService _firestoreService = FirestoreService();
-  bool _isUploading = false;
 
   // Grab the current user details directly from the Firebase Auth instance cache
   final User? _currentUser = FirebaseAuth.instance.currentUser;
 
   Future<void> _updatePhoto() async {
-    setState(() {
-      _isUploading = true;
+    await context.read<ProfileScreenProvider>().upload(() async {
+      try {
+        final String? base64Result = await _imageService.pickAndConvertImage();
+        if (base64Result != null) {
+          await _firestoreService.saveUserProfilePicture(
+            widget.userId,
+            base64Result,
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          debugPrint('Error saving photo: $e');
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Error saving photo: $e')));
+        }
+      }
     });
-    try {
-      final String? base64Result = await _imageService.pickAndConvertImage();
-      if (base64Result != null) {
-        await _firestoreService.saveUserProfilePicture(
-          widget.userId,
-          base64Result,
-        );
-      }
-    } catch (e) {
-      if (mounted) {
-        debugPrint('Error saving photo: $e');
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error saving photo: $e')));
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isUploading = false);
-      }
-    }
   }
 
   @override
@@ -62,6 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final bool isDark = Theme.of(context).brightness == Brightness.dark;
     final themeProvider = context.watch<ThemeProvider>();
     final notifProvider = context.watch<NotificationProvider>();
+    final profileProvider = context.watch<ProfileScreenProvider>();
     final size = MediaQuery.of(context).size;
     final isTablet = size.width >= 600;
 
@@ -123,7 +119,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           bottom: 0,
                           right: 0,
                           child: GestureDetector(
-                            onTap: _isUploading ? null : _updatePhoto,
+                            onTap: profileProvider.uploading
+                                ? null
+                                : _updatePhoto,
                             child: Container(
                               width: 34,
                               height: 34,
@@ -137,7 +135,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                 ],
                               ),
-                              child: _isUploading
+                              child: profileProvider.uploading
                                   ? const Padding(
                                       padding: EdgeInsets.all(AppSizes.sm),
                                       child: CircularProgressIndicator(

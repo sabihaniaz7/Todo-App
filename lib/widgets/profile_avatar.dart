@@ -1,10 +1,9 @@
-import 'dart:async';
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_firebase/services/firestore_service.dart';
+import 'package:flutter_firebase/providers/profile_avatar_provider.dart';
 import 'package:flutter_firebase/theme/app_sizes.dart';
+import 'package:provider/provider.dart';
 
 /// A widget that displays the user's profile avatar.
 ///
@@ -29,11 +28,6 @@ class ProfileAvatar extends StatefulWidget {
 
 class _ProfileAvatarState extends State<ProfileAvatar>
     with SingleTickerProviderStateMixin {
-  final FirestoreService _firestoreService = FirestoreService();
-  StreamSubscription<DocumentSnapshot>? _subscription;
-  String? _cachedBase64;
-  bool _loading = true;
-
   // Shimmer animation controller
   late final AnimationController _shimmerController;
 
@@ -44,66 +38,51 @@ class _ProfileAvatarState extends State<ProfileAvatar>
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat();
-    _subscribe();
-  }
-
-  void _subscribe() {
-    _subscription = _firestoreService
-        .getUserProfilStream(widget.userId)
-        .listen(
-          (snapshot) {
-            if (!mounted) return;
-            final data = (snapshot.data() as Map<String, dynamic>?);
-            final base64String = data?['profilePicData'] as String?;
-            final userName = data?['userName'] as String?;
-            setState(() {
-              // Keep previous cached data if null to avoid flicker on temporary loss
-              if (base64String != null) _cachedBase64 = base64String;
-              if (userName != null) {
-                _loading = false;
-              }
-            });
-          },
-          onError: (_) {
-            setState(() {
-              _loading = false;
-            });
-          },
-        );
   }
 
   @override
   void dispose() {
-    _subscription?.cancel();
     _shimmerController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_loading && _cachedBase64 == null) {
-      // show perosn Icon
-      return CircleAvatar(
-        radius: widget.radius,
-        backgroundColor: widget.backgroundColor,
-        child: Icon(
-          Icons.person,
-          color: widget.iconColor,
-          size: AppSizes.iconXl,
-        ),
-      );
-    }
-    //  Main Avatar state (Loaded or Done checking)
-    final bool hasImage = _cachedBase64 != null && _cachedBase64!.isNotEmpty;
-    return CircleAvatar(
-      radius: widget.radius,
-      backgroundImage: hasImage
-          ? MemoryImage(base64Decode(_cachedBase64!))
-          : null,
-      // If we DO NOT have an image, show the person icon. If we have an image, child is null.
-      child: !hasImage
-          ? Icon(Icons.person, color: widget.iconColor, size: AppSizes.iconXl)
-          : null,
+    return ChangeNotifierProvider(
+      create: (_) => ProfileAvatarProvider(userId: widget.userId),
+      child: Consumer<ProfileAvatarProvider>(
+        builder: (context, avatarProvider, _) {
+          if (avatarProvider.loading && avatarProvider.cachedBase64 == null) {
+            // show perosn Icon
+            return CircleAvatar(
+              radius: widget.radius,
+              backgroundColor: widget.backgroundColor,
+              child: Icon(
+                Icons.person,
+                color: widget.iconColor,
+                size: AppSizes.iconXl,
+              ),
+            );
+          }
+          //  Main Avatar state (Loaded or Done checking)
+          final cachedBase64 = avatarProvider.cachedBase64;
+          final bool hasImage = cachedBase64 != null && cachedBase64.isNotEmpty;
+          return CircleAvatar(
+            radius: widget.radius,
+            backgroundImage: hasImage
+                ? MemoryImage(base64Decode(cachedBase64))
+                : null,
+            // If we DO NOT have an image, show the person icon. If we have an image, child is null.
+            child: !hasImage
+                ? Icon(
+                    Icons.person,
+                    color: widget.iconColor,
+                    size: AppSizes.iconXl,
+                  )
+                : null,
+          );
+        },
+      ),
     );
   }
 }

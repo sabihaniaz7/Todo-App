@@ -5,12 +5,18 @@ import 'package:flutter/material.dart';
 
 class CalendarStrip extends StatefulWidget {
   final DateTime selectedDate;
+  final DateTime currentWeekStart;
   final ValueChanged<DateTime> onDateSelected;
+  final VoidCallback onPreviousWeek;
+  final VoidCallback onNextWeek;
   final bool isTablet;
   const CalendarStrip({
     super.key,
     required this.selectedDate,
+    required this.currentWeekStart,
     required this.onDateSelected,
+    required this.onPreviousWeek,
+    required this.onNextWeek,
     required this.isTablet,
   });
 
@@ -19,22 +25,20 @@ class CalendarStrip extends StatefulWidget {
 }
 
 class _CalendarStripState extends State<CalendarStrip> {
-  late DateTime _currentWeekStart;
   late final ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _currentWeekStart = _getWeekStart(widget.selectedDate);
     _scrollToSelectedDate(jump: true);
   }
 
   @override
   void didUpdateWidget(covariant CalendarStrip oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (!_isSameDay(oldWidget.selectedDate, widget.selectedDate)) {
-      _currentWeekStart = _getWeekStart(widget.selectedDate);
+    if (!_isSameDay(oldWidget.selectedDate, widget.selectedDate) ||
+        !_isSameDay(oldWidget.currentWeekStart, widget.currentWeekStart)) {
       _scrollToSelectedDate();
     }
   }
@@ -43,11 +47,6 @@ class _CalendarStripState extends State<CalendarStrip> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
-  }
-
-  DateTime _getWeekStart(DateTime date) {
-    final dayOfWeek = date.weekday; //1=monday, 7=sunday
-    return date.subtract(Duration(days: dayOfWeek - 1));
   }
 
   bool _isSameDay(DateTime a, DateTime b) {
@@ -59,7 +58,7 @@ class _CalendarStripState extends State<CalendarStrip> {
       if (!mounted || !_scrollController.hasClients) return;
 
       final selectedIndex = widget.selectedDate
-          .difference(_currentWeekStart)
+          .difference(widget.currentWeekStart)
           .inDays
           .clamp(0, 6);
       const itemStride = AppSizes.calendarDayWidth + AppSizes.sm;
@@ -86,9 +85,7 @@ class _CalendarStripState extends State<CalendarStrip> {
   }
 
   void _prevWeek() {
-    setState(() {
-      _currentWeekStart = _currentWeekStart.subtract(Duration(days: 7));
-    });
+    widget.onPreviousWeek();
     _scrollController.animateTo(
       0,
       duration: const Duration(milliseconds: 220),
@@ -97,9 +94,7 @@ class _CalendarStripState extends State<CalendarStrip> {
   }
 
   void _nextWeek() {
-    setState(
-      () => _currentWeekStart = _currentWeekStart.add(const Duration(days: 7)),
-    );
+    widget.onNextWeek();
     _scrollController.animateTo(
       0,
       duration: const Duration(milliseconds: 220),
@@ -122,18 +117,20 @@ class _CalendarStripState extends State<CalendarStrip> {
     final now = DateTime.now();
     // Determine month label based on the selected date if it falls within the current week view.
     // Otherwise, default to the current week's start date.
-    final weekEnd = _currentWeekStart.add(const Duration(days: 6));
+    final weekEnd = widget.currentWeekStart.add(const Duration(days: 6));
     final bool isSelectedDateInvisibleWeek =
-        (widget.selectedDate.isAfter(_currentWeekStart) ||
-            _isSameDay(widget.selectedDate, _currentWeekStart)) &&
+        (widget.selectedDate.isAfter(widget.currentWeekStart) ||
+            _isSameDay(widget.selectedDate, widget.currentWeekStart)) &&
         (widget.selectedDate.isBefore(weekEnd) ||
             _isSameDay(widget.selectedDate, weekEnd));
     final monthLabel = DateFormat('MMMM').format(
-      isSelectedDateInvisibleWeek ? widget.selectedDate : _currentWeekStart,
+      isSelectedDateInvisibleWeek
+          ? widget.selectedDate
+          : widget.currentWeekStart,
     );
     final days = List.generate(
       7,
-      (i) => _currentWeekStart.add(Duration(days: i)),
+      (i) => widget.currentWeekStart.add(Duration(days: i)),
     );
     return Column(
       children: [

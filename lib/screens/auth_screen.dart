@@ -1,8 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase/providers/auth_provider.dart';
 import 'package:flutter_firebase/services/auth_service.dart';
 import 'package:flutter_firebase/theme/app_colors.dart';
 import 'package:flutter_firebase/theme/app_sizes.dart';
+import 'package:provider/provider.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -16,10 +18,6 @@ class _AuthScreenState extends State<AuthScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
-  bool _isLogin = true;
-  bool _isLoading = false;
-  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -50,16 +48,17 @@ class _AuthScreenState extends State<AuthScreen> {
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
+    final authProvider = context.read<AuthProvider>();
 
     if (email.isEmpty || password.isEmpty) {
       _showError("Please fill in all fields.");
       return;
     }
-    if (!_isLogin && name.isEmpty) {
+    if (!authProvider.isLogin && name.isEmpty) {
       _showError("Please enter your name.");
       return;
     }
-    setState(() => _isLoading = true);
+    authProvider.setLoading(true);
     try {
       await authFunction();
     } on FirebaseAuthException catch (e) {
@@ -83,12 +82,13 @@ class _AuthScreenState extends State<AuthScreen> {
     } catch (e) {
       _showError(e.toString());
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      if (mounted) authProvider.setLoading(false);
     }
   }
 
   Future<void> _handleGoogleSignIn() async {
-    setState(() => _isLoading = true);
+    final authProvider = context.read<AuthProvider>();
+    authProvider.setLoading(true);
     try {
       final result = await _authService.signInWithGoogle();
       if (result == null) {
@@ -99,7 +99,7 @@ class _AuthScreenState extends State<AuthScreen> {
     } catch (e) {
       _showError(e.toString());
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      if (mounted) authProvider.setLoading(false);
     }
   }
 
@@ -112,6 +112,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
     final fieldColor = Colors.black;
     final fieldTextColor = Colors.white;
+    final authProvider = context.watch<AuthProvider>();
 
     return Scaffold(
       backgroundColor: const Color(0xFF0D0D0D),
@@ -151,7 +152,7 @@ class _AuthScreenState extends State<AuthScreen> {
                     ),
                     const SizedBox(height: AppSizes.xxl),
                     Text(
-                      _isLogin ? 'Welcome Back' : 'Create Account',
+                      authProvider.isLogin ? 'Welcome Back' : 'Create Account',
 
                       style: TextStyle(
                         fontSize: AppSizes.fontXxl,
@@ -160,7 +161,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                     ),
                     const SizedBox(height: AppSizes.xl),
-                    if (!_isLogin) ...[
+                    if (!authProvider.isLogin) ...[
                       _AuthTextField(
                         controller: _nameController,
                         hintText: 'User Name',
@@ -183,21 +184,19 @@ class _AuthScreenState extends State<AuthScreen> {
                       hintText: 'Password',
                       fillColor: fieldColor,
                       textColor: fieldTextColor,
-                      obscureText: _obscurePassword,
+                      obscureText: authProvider.obscurePassword,
                       suffixIcon: IconButton(
-                        tooltip: _obscurePassword
+                        tooltip: authProvider.obscurePassword
                             ? 'Show password'
                             : 'Hide password',
                         icon: Icon(
-                          _obscurePassword
+                          authProvider.obscurePassword
                               ? Icons.visibility_outlined
                               : Icons.visibility_off_outlined,
                           color: secondaryTextColor,
                           size: AppSizes.iconMd,
                         ),
-                        onPressed: () => setState(
-                          () => _obscurePassword = !_obscurePassword,
-                        ),
+                        onPressed: authProvider.togglePasswordVisibility,
                       ),
                     ),
                     const SizedBox(height: AppSizes.lg),
@@ -211,10 +210,10 @@ class _AuthScreenState extends State<AuthScreen> {
                         ),
                       ),
                       // Disable the action button completely if any auth process is currently loading
-                      onPressed: _isLoading
+                      onPressed: authProvider.isLoading
                           ? null
                           : () => _handleAuth(
-                              _isLogin
+                              authProvider.isLogin
                                   ? () => _authService.loginWithEmail(
                                       _emailController.text.trim(),
                                       _passwordController.text.trim(),
@@ -226,8 +225,9 @@ class _AuthScreenState extends State<AuthScreen> {
                                     ),
                             ),
                       child:
-                          _isLoading &&
-                              _isLogin // If loading email-auth, you could show a spinner here, or just keep the text disabled
+                          authProvider.isLoading &&
+                              authProvider
+                                  .isLogin // If loading email-auth, you could show a spinner here, or just keep the text disabled
                           ? const SizedBox(
                               height: AppSizes.lg20,
                               width: AppSizes.lg20,
@@ -236,7 +236,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 color: Colors.white,
                               ),
                             )
-                          : Text(_isLogin ? 'Log in' : 'Sign up'),
+                          : Text(authProvider.isLogin ? 'Log in' : 'Sign up'),
                     ),
                     const SizedBox(height: AppSizes.md),
                     OutlinedButton.icon(
@@ -250,7 +250,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                         ),
                       ),
-                      icon: _isLoading
+                      icon: authProvider.isLoading
                           ? const SizedBox(
                               height: AppSizes.lg20,
                               width: AppSizes.lg20,
@@ -265,23 +265,25 @@ class _AuthScreenState extends State<AuthScreen> {
                               size: AppSizes.icon20,
                             ),
                       label: Text(
-                        _isLoading ? 'Connecting...' : 'Sign in with Google',
+                        authProvider.isLoading
+                            ? 'Connecting...'
+                            : 'Sign in with Google',
                       ),
                       // Disable button if loading
-                      onPressed: _isLoading ? null : _handleGoogleSignIn,
+                      onPressed: authProvider.isLoading
+                          ? null
+                          : _handleGoogleSignIn,
                     ),
                     const SizedBox(height: AppSizes.xl),
                     TextButton(
-                      onPressed: _isLoading
+                      onPressed: authProvider.isLoading
                           ? null
                           : () {
-                              setState(() {
-                                _isLogin = !_isLogin;
-                                // Clean input caches instantly during structural tree context swaps
-                                _emailController.clear();
-                                _passwordController.clear();
-                                _nameController.clear();
-                              });
+                              authProvider.toggleAuthMode();
+                              // Clean input caches instantly during structural tree context swaps
+                              _emailController.clear();
+                              _passwordController.clear();
+                              _nameController.clear();
                             },
                       child: RichText(
                         textAlign: TextAlign.center,
@@ -292,13 +294,13 @@ class _AuthScreenState extends State<AuthScreen> {
                           ),
                           children: [
                             TextSpan(
-                              text: _isLogin
+                              text: authProvider.isLogin
                                   ? "Don't have an account? "
                                   : "Have an account? ",
                               style: const TextStyle(fontSize: AppSizes.fontMd),
                             ),
                             TextSpan(
-                              text: _isLogin ? 'Sign Up' : 'Log in',
+                              text: authProvider.isLogin ? 'Sign Up' : 'Log in',
                               style: const TextStyle(
                                 color: Color(0xFFB19FFB),
                                 fontWeight: FontWeight.w700,

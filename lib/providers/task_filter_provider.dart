@@ -4,13 +4,43 @@ enum TaskFilter { all, pending, completed, inProgress }
 
 class TaskFilterProvider extends ChangeNotifier {
   TaskFilter _filter = TaskFilter.all;
+  DateTime _selectedDate = DateTime.now();
+  late DateTime _currentWeekStart = _getWeekStart(_selectedDate);
 
   TaskFilter get filter => _filter;
+  DateTime get selectedDate => _selectedDate;
+  DateTime get currentWeekStart => _currentWeekStart;
 
   void setFilter(TaskFilter f) {
     if (_filter == f) return;
     _filter = f;
     notifyListeners();
+  }
+
+  void setSelectedDate(DateTime date) {
+    if (_isSameDay(_selectedDate, date)) return;
+    _selectedDate = date;
+    _currentWeekStart = _getWeekStart(date);
+    notifyListeners();
+  }
+
+  void showPreviousWeek() {
+    _currentWeekStart = _currentWeekStart.subtract(const Duration(days: 7));
+    notifyListeners();
+  }
+
+  void showNextWeek() {
+    _currentWeekStart = _currentWeekStart.add(const Duration(days: 7));
+    notifyListeners();
+  }
+
+  DateTime _getWeekStart(DateTime date) {
+    final dayOfWeek = date.weekday; // 1=monday, 7=sunday
+    return date.subtract(Duration(days: dayOfWeek - 1));
+  }
+
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 
   // Returns true/false/null for Firestore query (isCompleted / inProgress)

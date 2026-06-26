@@ -1,9 +1,11 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' hide AuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_firebase/firebase_options.dart';
+import 'package:flutter_firebase/providers/auth_provider.dart';
 import 'package:flutter_firebase/providers/notification_provider.dart';
+import 'package:flutter_firebase/providers/profile_screen_provider.dart';
 import 'package:flutter_firebase/providers/task_filter_provider.dart';
 import 'package:flutter_firebase/providers/theme_provider.dart';
 import 'package:flutter_firebase/screens/auth_screen.dart';
@@ -33,6 +35,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => TaskFilterProvider()),
         ChangeNotifierProvider(create: (_) => NotificationProvider()),
+        ChangeNotifierProvider(create: (_) => ProfileScreenProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {

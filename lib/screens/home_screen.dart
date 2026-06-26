@@ -26,7 +26,6 @@ class TaskScreen extends StatefulWidget {
 class _TaskScreenState extends State<TaskScreen> {
   final TaskController _taskController = TaskController();
   final MessagingService _messagingService = MessagingService();
-  DateTime _selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -64,6 +63,7 @@ class _TaskScreenState extends State<TaskScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final isTablet = size.width >= 600;
+    final filterProvider = context.watch<TaskFilterProvider>();
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -77,14 +77,17 @@ class _TaskScreenState extends State<TaskScreen> {
               onProfileTap: _openProfile,
             ),
             CalendarStrip(
-              selectedDate: _selectedDate,
-              onDateSelected: (date) => setState(() => _selectedDate = date),
+              selectedDate: filterProvider.selectedDate,
+              currentWeekStart: filterProvider.currentWeekStart,
+              onDateSelected: filterProvider.setSelectedDate,
+              onPreviousWeek: filterProvider.showPreviousWeek,
+              onNextWeek: filterProvider.showNextWeek,
               isTablet: isTablet,
             ),
             const SizedBox(height: AppSizes.md),
             _TaskFilterBar(
               userId: widget.userId,
-              selectedDate: _selectedDate,
+              selectedDate: filterProvider.selectedDate,
               taskController: _taskController,
               isTablet: isTablet,
             ),
@@ -92,7 +95,7 @@ class _TaskScreenState extends State<TaskScreen> {
             Expanded(
               child: _TaskList(
                 userId: widget.userId,
-                selectedDate: _selectedDate,
+                selectedDate: filterProvider.selectedDate,
                 taskController: _taskController,
                 isTablet: isTablet,
               ),
