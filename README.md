@@ -30,7 +30,6 @@ A Flutter task manager powered by Firebase. Todo App helps users sign in, manage
 - Provider for state management
 - Shared Preferences for local theme storage
 - Image Picker for profile photos
-- Share Plus and URL Launcher for platform features
 
 ## Screens
 
