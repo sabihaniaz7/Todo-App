@@ -300,7 +300,7 @@ class _AuthScreenState extends State<AuthScreen> {
                               style: const TextStyle(fontSize: AppSizes.fontMd),
                             ),
                             TextSpan(
-                              text: authProvider.isLogin ? 'Sign Up' : 'Log in',
+                              text: authProvider.isLogin ? 'Sign up' : 'Log in',
                               style: const TextStyle(
                                 color: Color(0xFFB19FFB),
                                 fontWeight: FontWeight.w700,

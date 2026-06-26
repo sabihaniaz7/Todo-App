@@ -21,7 +21,7 @@ class FilterChipsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 38,
+      height: 42,
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(
@@ -119,9 +119,13 @@ class _FilterChip extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Container(
+              constraints: const BoxConstraints(minWidth: 22, minHeight: 22),
               alignment: Alignment.center,
-              padding: const EdgeInsets.all(6),
-              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(AppSizes.radiusFull),
+              ),
               child: Text(
                 count == -1 ? '!' : count.toString(),
                 style: const TextStyle(

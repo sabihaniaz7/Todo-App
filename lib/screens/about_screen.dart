@@ -56,7 +56,8 @@ class AboutScreen extends StatelessWidget {
               // Enhanced Technical Spec Cards
               _buildAboutCard(
                 context,
-                title: '',
+                // suggest title
+                title: 'About This App',
                 content:
                     'A clean, super-fast app designed to help you organize your daily routines and stay on track, keeping everything synced safely to the cloud.',
               ),
