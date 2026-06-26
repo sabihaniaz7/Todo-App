@@ -13,7 +13,15 @@ import 'package:flutter_firebase/theme/app_sizes.dart';
 class ProfileAvatar extends StatefulWidget {
   final String userId;
   final double radius;
-  const ProfileAvatar({super.key, required this.userId, required this.radius});
+  final Color? backgroundColor;
+  final Color? iconColor;
+  const ProfileAvatar({
+    super.key,
+    required this.userId,
+    required this.radius,
+    this.backgroundColor,
+    this.iconColor,
+  });
 
   @override
   State<ProfileAvatar> createState() => _ProfileAvatarState();
@@ -77,10 +85,10 @@ class _ProfileAvatarState extends State<ProfileAvatar>
       // show perosn Icon
       return CircleAvatar(
         radius: widget.radius,
-        backgroundColor: Colors.white.withAlpha(20),
-        child: const Icon(
+        backgroundColor: widget.backgroundColor,
+        child: Icon(
           Icons.person,
-          color: Colors.white,
+          color: widget.iconColor,
           size: AppSizes.iconXl,
         ),
       );
@@ -94,7 +102,7 @@ class _ProfileAvatarState extends State<ProfileAvatar>
           : null,
       // If we DO NOT have an image, show the person icon. If we have an image, child is null.
       child: !hasImage
-          ? const Icon(Icons.person, color: Colors.white, size: AppSizes.iconXl)
+          ? Icon(Icons.person, color: widget.iconColor, size: AppSizes.iconXl)
           : null,
     );
   }

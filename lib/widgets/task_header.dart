@@ -53,7 +53,12 @@ class TaskHeader extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: GestureDetector(
               onTap: onProfileTap,
-              child: ProfileAvatar(userId: userId, radius: AppSizes.avatarSm),
+              child: ProfileAvatar(
+                userId: userId,
+                backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                iconColor: AppColors.primary,
+                radius: AppSizes.avatarSm,
+              ),
             ),
           ),
         ],

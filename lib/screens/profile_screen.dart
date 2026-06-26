@@ -122,7 +122,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Positioned(
                           bottom: 0,
                           right: 0,
-
                           child: GestureDetector(
                             onTap: _isUploading ? null : _updatePhoto,
                             child: Container(
