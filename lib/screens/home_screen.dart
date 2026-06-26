@@ -214,24 +214,24 @@ class _TaskErrorState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(AppSizes.lg),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.error_outline, color: Colors.red, size: 48),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSizes.md),
             const Text(
               'Firestore Error',
               style: TextStyle(
-                fontSize: 18,
+                fontSize: AppSizes.fontXl,
                 fontWeight: FontWeight.bold,
                 color: Colors.red,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSizes.sm),
             SelectableText(
               '$error',
-              style: const TextStyle(fontSize: 12),
+              style: const TextStyle(fontSize: AppSizes.fontSm),
               textAlign: TextAlign.center,
             ),
           ],

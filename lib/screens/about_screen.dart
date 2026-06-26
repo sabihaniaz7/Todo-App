@@ -36,14 +36,14 @@ class AboutScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: AppSizes.fontDisplay,
                   fontWeight: FontWeight.w900,
-                  color: const Color(0xFFB19FFB), // Signature light purple tone
+                  color: AppColors.primary, // Signature light purple tone
                   letterSpacing: 0.5,
                 ),
               ),
               Text(
                 'Version 1.0.0',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: AppSizes.fontMd,
                   color: isDark
                       ? AppColors.darkTextSecondary
                       : AppColors.lightTextSecondary,
@@ -56,27 +56,27 @@ class AboutScreen extends StatelessWidget {
               // Enhanced Technical Spec Cards
               _buildAboutCard(
                 context,
-                title: 'The Mission',
+                title: '',
                 content:
-                    'A minimal, lightning-fast task management platform designed to eliminate cognitive overload. Built to help individuals structure their daily routines smoothly with state-of-the-art cloud workflows.',
+                    'A clean, super-fast app designed to help you organize your daily routines and stay on track, keeping everything synced safely to the cloud.',
               ),
 
               _buildAboutCard(
                 context,
-                title: 'Firebase Engine Ecosystem',
+                title: 'Cloud Powered System',
                 content:
-                    '• Cloud Firestore: Realtime multi-device database synchronization.\n'
-                    '• Firebase Auth: Secure JWT-backed authentication via Email/Password credentials and Google Identity Credential Manager.\n'
-                    '• Offline Persistence: Seamless local caching allowing full offline task mutations that sync instantly when back online.',
+                    '• Live Sync: Your tasks update instantly across all your devices.\n'
+                    '• Secure Login: Keep your account safe using your Email or your Google account.\n'
+                    '• Works Offline: Create and manage tasks even without internet. Your changes will save and update automatically the moment you reconnect.',
               ),
 
               _buildAboutCard(
                 context,
-                title: 'Core App Features',
+                title: 'Key Features',
                 content:
-                    '• Contextual Task Filtering: Switch between active, completed, and high-priority states dynamically.\n'
-                    '• Native Theme Engine: Fluid architectural transitions between custom True Dark and Light UI modes.\n'
-                    '• Local Notification Engine: Low-overhead scheduling threads for task deadlines and contextual reminders.',
+                    '• Smart Filters: Easily switch views to see your ongoing, completed, or high-priority tasks.\n'
+                    '• Dark & Light Modes: A beautiful design that switches smoothly between light and eye-friendly dark layouts.\n'
+                    '• Smart Reminders: Timely notifications to make sure you never miss an important deadline or task.',
               ),
 
               // Footer Metadata
@@ -85,7 +85,7 @@ class AboutScreen extends StatelessWidget {
                 child: Text(
                   '© 2026 By Sabiha Niaz.',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: AppSizes.fontSm,
                     color: Colors.grey,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.3,
@@ -123,17 +123,17 @@ class AboutScreen extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 16,
+            style: TextStyle(
+              fontSize: AppSizes.fontLg,
               fontWeight: FontWeight.w800,
-              color: Color(0xFFB19FFB), // Matching your custom accent color
+              color: AppColors.primary,
             ),
           ),
           const SizedBox(height: AppSizes.sm),
           Text(
             content,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: AppSizes.fontMd,
               height: 1.5,
               color: isDark
                   ? AppColors.darkTextPrimary

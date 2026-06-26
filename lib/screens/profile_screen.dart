@@ -139,7 +139,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               child: _isUploading
                                   ? const Padding(
-                                      padding: EdgeInsets.all(8.0),
+                                      padding: EdgeInsets.all(AppSizes.sm),
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
                                         color: AppColors.primary,

@@ -120,8 +120,8 @@ class _AuthScreenState extends State<AuthScreen> {
           builder: (context, constraints) {
             return SingleChildScrollView(
               padding: const EdgeInsets.symmetric(
-                horizontal: 28.0,
-                vertical: 24.0,
+                horizontal: AppSizes.lg28,
+                vertical: AppSizes.lg,
               ),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -133,7 +133,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   children: [
                     Column(
                       children: [
-                        const SizedBox(height: 20),
+                        const SizedBox(height: AppSizes.lg20),
                         Text(
                           'Todo App',
                           textAlign: TextAlign.center,
@@ -229,8 +229,8 @@ class _AuthScreenState extends State<AuthScreen> {
                           _isLoading &&
                               _isLogin // If loading email-auth, you could show a spinner here, or just keep the text disabled
                           ? const SizedBox(
-                              height: 20,
-                              width: 20,
+                              height: AppSizes.lg20,
+                              width: AppSizes.lg20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
                                 color: Colors.white,
@@ -252,8 +252,8 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                       icon: _isLoading
                           ? const SizedBox(
-                              height: 20,
-                              width: 20,
+                              height: AppSizes.lg20,
+                              width: AppSizes.lg20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
                                 color: AppColors.primary,
@@ -262,7 +262,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           : const Icon(
                               Icons.g_mobiledata,
                               color: Colors.red,
-                              size: 30,
+                              size: AppSizes.icon20,
                             ),
                       label: Text(
                         _isLoading ? 'Connecting...' : 'Sign in with Google',
@@ -287,7 +287,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         textAlign: TextAlign.center,
                         text: TextSpan(
                           style: const TextStyle(
-                            fontSize: 13,
+                            fontSize: AppSizes.fontMd,
                             color: Colors.white54,
                           ),
                           children: [

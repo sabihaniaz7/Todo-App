@@ -55,7 +55,7 @@ class TaskHeader extends StatelessWidget {
               onTap: onProfileTap,
               child: ProfileAvatar(
                 userId: userId,
-                backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                backgroundColor: AppColors.primary,
                 iconColor: AppColors.primary,
                 radius: AppSizes.avatarSm,
               ),

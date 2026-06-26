@@ -64,7 +64,7 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
           Center(
             child: Container(
               width: 40,
-              height: 4,
+              height: AppSizes.xs,
               decoration: BoxDecoration(
                 color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
                 borderRadius: BorderRadius.circular(AppSizes.radiusFull),

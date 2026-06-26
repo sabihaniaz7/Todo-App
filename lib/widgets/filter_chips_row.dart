@@ -119,17 +119,16 @@ class _FilterChip extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
-              decoration: BoxDecoration(
-                color: AppColors.primary.withValues(alpha: 0.35),
-                borderRadius: BorderRadius.circular(10),
-              ),
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
               child: Text(
                 count == -1 ? '!' : count.toString(),
-                style: TextStyle(
-                  fontSize: 12,
+                style: const TextStyle(
+                  fontSize: AppSizes.fontSm,
                   fontWeight: FontWeight.w800,
-                  color: color,
+                  color: Colors.white,
+                  height: 1.0,
                 ),
               ),
             ),

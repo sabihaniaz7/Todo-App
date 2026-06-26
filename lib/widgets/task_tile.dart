@@ -101,7 +101,7 @@ class _TimelineTileRow extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               SizedBox(
-                width: 32,
+                width: AppSizes.xl,
                 child: Column(
                   children: [
                     Container(

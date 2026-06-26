@@ -7,6 +7,8 @@ class AppSizes {
   static const double sm = 8.0;
   static const double md = 16.0;
   static const double lg = 24.0;
+  static const double lg28 = 28.0;
+  static const double lg20 = 20.0;
   static const double xl = 32.0;
   static const double xxl = 48.0;
 
@@ -21,6 +23,8 @@ class AppSizes {
   static const double iconSm = 16.0;
   static const double iconMd = 20.0;
   static const double iconLg = 24.0;
+  static const double icon20 = 20.0;
+  static const double icon30 = 30.0;
   static const double iconXl = 32.0;
 
   // ── Avatar / profile ─────────────────────────────────────────────────────────

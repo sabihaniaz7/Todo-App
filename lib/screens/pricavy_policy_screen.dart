@@ -58,27 +58,27 @@ class PrivacyPolicyScreen extends StatelessWidget {
 
               _buildPolicySection(
                 context,
-                title: '1. Account Credentials & Security',
+                title: '1. Account & Password Security',
                 body:
-                    'Todo App utilizes secure Firebase Authentication servers. Your passwords are processed natively via Firebase Identity Provider tools and are never visible to or stored by us in unencrypted, plain-text formats.',
+                    'We use Google Firebase to handle logins securely. Your password is encrypted instantly, meaning it is completely hidden and can never be seen or read by us.',
               ),
               _buildPolicySection(
                 context,
-                title: '2. Cloud Database Infrastructure',
+                title: '2. How Your Tasks Are Saved',
                 body:
-                    'Your personal tasks, filter criteria, and contextual task updates are hosted inside Cloud Firestore instances. Data entries are strongly partitioned using server-side Security Rules, restricting read and write access strictly to the authenticated owner account.',
+                    'Your tasks, categories, and updates are saved in a secure cloud database. Strict safety rules are in place so that only you can see, edit, or access your own information.',
               ),
               _buildPolicySection(
                 context,
-                title: '3. Device Notification Triggers',
+                title: '3. App Notifications',
                 body:
-                    'Local alert channels and Firebase Cloud Messaging tokens are used solely to remind you of pending task durations or contextual deadlines. No analytics or promotional payload tracking is attached.',
+                    'We only use notifications to remind you about your task deadlines. We never track your activity or send you spam, ads, or promotional messages.',
               ),
               _buildPolicySection(
                 context,
-                title: '4. Offline Storage Boundaries',
+                title: '4. Storage & Deleting Data',
                 body:
-                    'Cached data points (including current app theme logs and offline task changes) reside locally within sandboxed app storage. Clearing app cache or deleting your user account thoroughly wipes these variables instantly.',
+                    'Your app settings (like your Dark/Light mode preference) and offline tasks are saved directly on your phone. If you clear your app data or delete your account, everything is permanently wiped clean instantly.',
               ),
             ],
           ),
@@ -100,17 +100,17 @@ class PrivacyPolicyScreen extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 16,
+            style: TextStyle(
+              fontSize: AppSizes.fontLg,
               fontWeight: FontWeight.w800,
-              color: Color(0xFFB19FFB), // Unified purple tone match
+              color: AppColors.primary, // Unified purple tone match
             ),
           ),
           const SizedBox(height: AppSizes.xs),
           Text(
             body,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: AppSizes.fontMd,
               height: 1.5,
               color: isDark
                   ? AppColors.darkTextSecondary
